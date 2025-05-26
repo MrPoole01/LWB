@@ -39,13 +39,13 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit }) => {
       
       // Call the parent onSubmit if provided
       if (onSubmit) {
-        onSubmit(formData);
+    onSubmit(formData);
       }
       
       // Download the guide
       await downloadGuide();
       
-      setSubmitted(true);
+    setSubmitted(true);
     } catch (err) {
       setError('There was an error submitting your information. Please try again.');
       console.error('Form submission error:', err);
