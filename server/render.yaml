@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: legacy-wealth-api
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_PASS
+        sync: false
+      - key: ADMIN_EMAIL
+        value: info@lw-builders.com
+      - key: FRONTEND_URL
+        sync: false 
