@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+// Simple API URL construction
+const API_URL = 'http://localhost:3001/api';
+
+console.log('Using API URL:', API_URL);
 
 export interface LeadFormData {
   firstName: string;
@@ -11,7 +14,9 @@ export interface LeadFormData {
 
 export const submitLead = async (data: LeadFormData) => {
   try {
-    const response = await axios.post(`${API_URL}/api/submit-lead`, data);
+    const url = `${API_URL}/submit-lead`;
+    console.log('Submitting to URL:', url);
+    const response = await axios.post(url, data);
     return response.data;
   } catch (error) {
     console.error('Error submitting lead:', error);
@@ -21,19 +26,22 @@ export const submitLead = async (data: LeadFormData) => {
 
 export const downloadGuide = async () => {
   try {
-    const response = await axios.get(`${API_URL}/api/download-guide`, {
+    const url = `${API_URL}/download-guide`;
+    console.log('Downloading from URL:', url);
+    const response = await axios.get(url, {
       responseType: 'blob'
     });
     
     // Create a blob URL and trigger download
-    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const downloadUrl = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
-    link.href = url;
+    link.href = downloadUrl;
     link.setAttribute('download', 'legacy-wealth-guide.pdf');
     document.body.appendChild(link);
     link.click();
     link.remove();
-    window.URL.revokeObjectURL(url);
+    window.URL.revokeObjectURL(downloadUrl);
   } catch (error) {
     console.error('Error downloading guide:', error);
     throw error;

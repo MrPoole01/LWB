@@ -7,45 +7,43 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Dependencies
+node_modules/
+server/node_modules/
+client/node_modules/
+/.pnp
+.pnp.js
+
+# Environment variables
+.env
+
+# Build outputs
+dist/
+dist-ssr/
+build/
+out/
+.next/
+server/dist/
+
+# Testing and Coverage
+coverage/
+
+# Cache
+.cache/
+.npm/
+.eslintcache/
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
+*.swp
+*.swo
 
-# Environment variables
-.env
-.env.local
-.env.*.local
-.env.development
-.env.production
-
-# Server build
-server/dist
-
-# Dependencies
-server/node_modules
-client/node_modules
-
-# Build outputs
-build
-out
-.next
-
-# Coverage directory
-coverage
-
-# Cache
-.cache
-.npm
-.eslintcache
+# OS generated files
+.DS_Store
+*.pem

@@ -1,5 +1,7 @@
 import nodemailer from 'nodemailer';
 import { LeadFormData } from '../types';
+import path from 'path';
+import fs from 'fs';
 
 // Create reusable transporter object using SMTP transport
 const createTransporter = () => {
@@ -39,6 +41,15 @@ export const sendAdminNotification = async (formData: LeadFormData) => {
 export const sendUserConfirmation = async (formData: LeadFormData) => {
   const transporter = createTransporter();
   
+  // Get the PDF file path
+  const pdfPath = path.join(__dirname, '../../public/legacy-wealth-guide.pdf');
+  
+  // Check if PDF exists
+  if (!fs.existsSync(pdfPath)) {
+    console.error('PDF file not found at:', pdfPath);
+    throw new Error('PDF guide not found');
+  }
+  
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to: formData.email,
@@ -47,7 +58,7 @@ export const sendUserConfirmation = async (formData: LeadFormData) => {
       <h2>Thank You for Your Interest!</h2>
       <p>Dear ${formData.firstName},</p>
       <p>Thank you for requesting our Legacy Wealth Guide to Precious Metals. We're excited to share this valuable resource with you!</p>
-      <p>You can download your guide by clicking the button below:</p>
+      <p>You'll find your guide attached to this email. You can also download it anytime by clicking the button below:</p>
       <div style="text-align: center; margin: 30px 0;">
         <a href="${process.env.FRONTEND_URL}/download-guide" 
            style="background-color: #D4AF37; color: #1A2744; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">
@@ -57,10 +68,17 @@ export const sendUserConfirmation = async (formData: LeadFormData) => {
       <p>If you have any questions about precious metals or would like to speak with one of our experts, please don't hesitate to contact us at ${process.env.ADMIN_EMAIL}.</p>
       <p>Best regards,<br>The Legacy Wealth Builders Team</p>
     `,
+    attachments: [
+      {
+        filename: 'legacy-wealth-guide.pdf',
+        path: pdfPath
+      }
+    ]
   };
 
   try {
     await transporter.sendMail(mailOptions);
+    console.log('Confirmation email sent with PDF attachment to:', formData.email);
   } catch (error) {
     console.error('Error sending user confirmation:', error);
     throw new Error('Failed to send user confirmation');
