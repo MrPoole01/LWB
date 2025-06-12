@@ -1,0 +1,54 @@
+<!-- 
+SQUARESPACE EMBED CODE FOR LEAD CAPTURE FORM
+Copy and paste this entire code block into a Squarespace Code Block
+Replace "legacy-wealth-api" with your actual Render app name if different
+-->
+
+<!-- CSS Styles -->
+<link rel="stylesheet" href="https://legacy-wealth-api.onrender.com/widget/assets/index-d4JxkTA9.css">
+
+<!-- Container for the widget -->
+<div id="lead-capture-widget" style="width: 100%; min-height: 800px; margin: 20px 0;"></div>
+
+<!-- JavaScript Files -->
+<script src="https://legacy-wealth-api.onrender.com/widget/assets/index--h19XiO6.js"></script>
+<script src="https://legacy-wealth-api.onrender.com/widget/embed.js"></script>
+
+<!-- Initialize the widget -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Wait a bit for all scripts to load
+    setTimeout(function() {
+        if (typeof initLeadCaptureWidget === 'function') {
+            console.log('Initializing Lead Capture Widget...');
+            initLeadCaptureWidget('lead-capture-widget');
+        } else {
+            console.error('Lead Capture Widget not found. Check if scripts loaded correctly.');
+        }
+    }, 1000);
+});
+
+// Fallback initialization
+window.addEventListener('load', function() {
+    if (typeof initLeadCaptureWidget === 'function' && !document.querySelector('#lead-capture-widget > *')) {
+        console.log('Fallback: Initializing Lead Capture Widget...');
+        initLeadCaptureWidget('lead-capture-widget');
+    }
+});
+</script>
+
+<!-- Optional: Custom styling to integrate with Squarespace -->
+<style>
+#lead-capture-widget {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background: transparent;
+}
+
+/* Hide Squarespace's default margins around code blocks */
+.sqs-block-code {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+</style> 

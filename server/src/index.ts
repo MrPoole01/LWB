@@ -24,11 +24,21 @@ const port = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174'],
+  origin: [
+    'http://localhost:5173', 
+    'http://localhost:5174',
+    'https://www.lw-builders.com',
+    'https://lw-builders.com'
+  ],
   methods: ['GET', 'POST'],
   credentials: true
 }));
-console.log('CORS configured to allow:', ['http://localhost:5173', 'http://localhost:5174']);
+console.log('CORS configured to allow:', [
+  'http://localhost:5173', 
+  'http://localhost:5174',
+  'https://www.lw-builders.com',
+  'https://lw-builders.com'
+]);
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../public')));

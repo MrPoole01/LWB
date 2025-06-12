@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lead Capture Widget Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        #lead-capture-widget {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Your Squarespace Page Content</h1>
+        <p>This is where your regular Squarespace content would go...</p>
+        
+        <!-- This is where the lead capture widget will be embedded -->
+        <div id="lead-capture-widget"></div>
+        
+        <p>More Squarespace content below the widget...</p>
+    </div>
+
+    <!-- Load the widget script -->
+    <script src="./dist/embed.js"></script>
+</body>
+</html> 
