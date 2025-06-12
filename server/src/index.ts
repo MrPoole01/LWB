@@ -28,7 +28,9 @@ app.use(cors({
     'http://localhost:5173', 
     'http://localhost:5174',
     'https://www.lw-builders.com',
-    'https://lw-builders.com'
+    'https://lw-builders.com',
+    'https://leads.lw-builders.com',
+    'https://app.lw-builders.com'
   ],
   methods: ['GET', 'POST'],
   credentials: true
@@ -37,7 +39,9 @@ console.log('CORS configured to allow:', [
   'http://localhost:5173', 
   'http://localhost:5174',
   'https://www.lw-builders.com',
-  'https://lw-builders.com'
+  'https://lw-builders.com',
+  'https://leads.lw-builders.com',
+  'https://app.lw-builders.com'
 ]);
 
 app.use(express.json());
