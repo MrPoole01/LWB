@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Play } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -11,9 +11,9 @@ interface VideoPlayerProps {
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ thumbnailUrl, videoUrl, title }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   
-  const handlePlay = () => {
+  const handlePlay = useCallback(() => {
     setIsPlaying(true);
-  };
+  }, []);
   
   return (
     <div className="relative w-full rounded-lg overflow-hidden shadow-xl bg-black">
@@ -23,17 +23,21 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ thumbnailUrl, videoUrl, title
             src={thumbnailUrl} 
             alt={title} 
             className="w-full h-auto object-cover aspect-video" 
+            loading="lazy"
           />
           
           <motion.div 
-            className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 cursor-pointer"
+            className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 cursor-pointer touch-manipulation"
             whileHover={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
             onClick={handlePlay}
+            onTouchStart={handlePlay}
+            style={{ touchAction: 'manipulation' }}
           >
             <motion.div
-              className="flex items-center justify-center h-16 w-16 bg-[#D4AF37] rounded-full"
+              className="flex items-center justify-center h-16 w-16 bg-[#D4AF37] rounded-full touch-manipulation"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
+              style={{ touchAction: 'manipulation' }}
             >
               <Play className="h-8 w-8 text-[#1A2744] ml-1" />
             </motion.div>
@@ -48,10 +52,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ thumbnailUrl, videoUrl, title
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
+            loading="lazy"
             style={{ 
               minHeight: '200px',
               border: 'none',
-              outline: 'none'
+              outline: 'none',
+              touchAction: 'manipulation'
             }}
           ></iframe>
         </div>
