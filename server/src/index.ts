@@ -24,29 +24,35 @@ const port = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors({
-  origin: [
-    'http://localhost:5173', 
-    'http://localhost:5174',
-    'https://www.lw-builders.com',
-    'https://lw-builders.com',
-    'https://leads.lw-builders.com',
-    'https://app.lw-builders.com',
-    'https://www.legacywealthbuilders.org',
-    'https://legacywealthbuilders.org'
-  ],
-  methods: ['GET', 'POST'],
-  credentials: true
+  origin: function(origin, callback) {
+    const allowedOrigins = [
+      'http://localhost:5173',
+      'http://localhost:5174',
+      'https://www.lw-builders.com',
+      'https://lw-builders.com',
+      'https://leads.lw-builders.com',
+      'https://app.lw-builders.com',
+      'https://www.legacywealthbuilders.org',
+      'https://legacywealthbuilders.org'
+    ];
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      console.log('Blocked by CORS:', origin);
+      return callback(new Error('Not allowed by CORS'), false);
+    }
+    console.log('Allowed by CORS:', origin);
+    return callback(null, true);
+  },
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 }));
-console.log('CORS configured to allow:', [
-  'http://localhost:5173', 
-  'http://localhost:5174',
-  'https://www.lw-builders.com',
-  'https://lw-builders.com',
-  'https://leads.lw-builders.com',
-  'https://app.lw-builders.com',
-  'https://www.legacywealthbuilders.org',
-  'https://legacywealthbuilders.org'
-]);
+
+// Add explicit OPTIONS handler for preflight requests
+app.options('*', cors());
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../public')));
@@ -55,6 +61,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} ${req.method} ${req.url}`);
   console.log('Origin:', req.headers.origin);
+  console.log('Headers:', req.headers);
   next();
 });
 
