@@ -16,9 +16,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ thumbnailUrl, videoUrl, title
   };
   
   return (
-    <div className="relative rounded-lg overflow-hidden shadow-xl">
+    <div className="relative w-full rounded-lg overflow-hidden shadow-xl bg-black">
       {!isPlaying ? (
-        <div className="relative">
+        <div className="relative w-full">
           <img 
             src={thumbnailUrl} 
             alt={title} 
@@ -40,14 +40,19 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ thumbnailUrl, videoUrl, title
           </motion.div>
         </div>
       ) : (
-        <div className="relative aspect-video">
+        <div className="relative w-full" style={{ paddingBottom: '56.25%' /* 16:9 aspect ratio */ }}>
           <iframe
             className="absolute top-0 left-0 w-full h-full"
             src={videoUrl}
             title={title}
             frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
+            style={{ 
+              minHeight: '200px',
+              border: 'none',
+              outline: 'none'
+            }}
           ></iframe>
         </div>
       )}
