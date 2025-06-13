@@ -75,7 +75,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ onSubmit }) => {
 
     } catch (error: any) {
       console.error('Form submission error:', error);
-      setSubmitMessage('There was an error submitting your information. Please try again or contact us directly at info@lw-builders.com.');
+      setSubmitMessage(error.message || 'There was an error submitting your information. Please try again or contact us directly at info@lw-builders.com.');
     } finally {
       setIsSubmitting(false);
     }

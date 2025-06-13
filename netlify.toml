@@ -1,6 +1,7 @@
 [build]
   publish = "dist"
   command = "npm run build"
+  functions = "netlify/functions"
 
 [build.environment]
   NODE_VERSION = "18"
@@ -12,22 +13,29 @@
 
 # Production environment (www.legacywealthbuilders.org)
 [context.production.environment]
-  VITE_API_URL = "https://legacy-wealth-api.onrender.com/api"
+  VITE_API_URL = "/.netlify/functions"
 
 # Deploy previews (for pull requests)
 [context.deploy-preview.environment]
-  VITE_API_URL = "https://legacy-wealth-api.onrender.com/api"
+  VITE_API_URL = "/.netlify/functions"
 
 # Branch deploys (for other branches)
 [context.branch-deploy.environment]
-  VITE_API_URL = "https://legacy-wealth-api.onrender.com/api"
+  VITE_API_URL = "/.netlify/functions"
 
 # Custom domain configuration
 [[headers]]
   for = "/*"
   [headers.values]
-    Access-Control-Allow-Origin = "https://www.legacywealthbuilders.org"
     X-Frame-Options = "DENY"
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin" 
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Function-specific headers
+[[headers]]
+  for = "/.netlify/functions/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Headers = "Content-Type"
+    Access-Control-Allow-Methods = "POST, OPTIONS" 
