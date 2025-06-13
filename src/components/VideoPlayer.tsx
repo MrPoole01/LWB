@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Play } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -10,10 +10,24 @@ interface VideoPlayerProps {
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ thumbnailUrl, videoUrl, title }) => {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   
   const handlePlay = useCallback(() => {
+    console.log('Play button clicked');
+    setIsLoading(true);
     setIsPlaying(true);
   }, []);
+
+  useEffect(() => {
+    if (isPlaying) {
+      console.log('Video is now playing, URL:', videoUrl);
+      // Set a timeout to remove loading state
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [isPlaying, videoUrl]);
   
   return (
     <div className="relative w-full rounded-lg overflow-hidden shadow-xl bg-black">
@@ -30,7 +44,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ thumbnailUrl, videoUrl, title
             className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 cursor-pointer touch-manipulation"
             whileHover={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
             onClick={handlePlay}
-            onTouchStart={handlePlay}
+            onTouchEnd={handlePlay}
             style={{ touchAction: 'manipulation' }}
           >
             <motion.div
@@ -44,20 +58,36 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ thumbnailUrl, videoUrl, title
           </motion.div>
         </div>
       ) : (
-        <div className="relative w-full" style={{ paddingBottom: '56.25%' /* 16:9 aspect ratio */ }}>
+        <div className="relative w-full bg-black" style={{ aspectRatio: '16/9', minHeight: '200px' }}>
+          {isLoading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black text-white">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-2"></div>
+                <p>Loading video...</p>
+              </div>
+            </div>
+          )}
           <iframe
-            className="absolute top-0 left-0 w-full h-full"
+            className="w-full h-full"
             src={videoUrl}
             title={title}
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
             loading="lazy"
+            onLoad={() => {
+              console.log('Iframe loaded successfully');
+              setIsLoading(false);
+            }}
+            onError={() => {
+              console.error('Iframe failed to load');
+              setIsLoading(false);
+            }}
             style={{ 
-              minHeight: '200px',
               border: 'none',
               outline: 'none',
-              touchAction: 'manipulation'
+              touchAction: 'manipulation',
+              display: 'block'
             }}
           ></iframe>
         </div>

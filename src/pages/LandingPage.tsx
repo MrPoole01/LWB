@@ -58,7 +58,7 @@ const LandingPage: React.FC = () => {
             >
               <VideoPlayer 
                 thumbnailUrl="https://live.staticflickr.com/65535/54545553563_5272406a7e.jpg"
-                videoUrl="https://www.youtube.com/embed/HyQRnKmqVmM?si=uWSad-lO3-IlUt5K&controls=1&autoplay=1"
+                videoUrl="https://www.youtube.com/embed/HyQRnKmqVmM?si=uWSad-lO3-IlUt5K&controls=1&rel=0&modestbranding=1&playsinline=1"
                 title="Gold and Silver Guide"
               />
             </motion.div>
