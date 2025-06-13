@@ -1,9 +1,6 @@
-const nodemailer = require('nodemailer');
-
 exports.handler = async (event, context) => {
   console.log('Function started');
   console.log('HTTP Method:', event.httpMethod);
-  console.log('Headers:', JSON.stringify(event.headers, null, 2));
   
   // Set CORS headers
   const headers = {
@@ -53,122 +50,110 @@ exports.handler = async (event, context) => {
     console.log('EMAIL_PASS exists:', !!process.env.EMAIL_PASS);
     console.log('ADMIN_EMAIL:', process.env.ADMIN_EMAIL);
     
-    // Check if email is configured
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-      console.log('Email not configured, returning success without sending');
+    // For now, let's just return success and log the data
+    // We'll add email functionality once we confirm the function works
+    console.log('Form data received successfully:', {
+      name: `${formData.firstName} ${formData.lastName}`,
+      email: formData.email,
+      phone: formData.phone || 'Not provided',
+      timestamp: new Date().toISOString()
+    });
+
+    // Try to send emails if configured
+    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+      console.log('Email credentials found, attempting to send emails...');
+      
+      try {
+        // Import nodemailer only when needed
+        const nodemailer = require('nodemailer');
+        
+        console.log('Creating email transporter...');
+        const transporter = nodemailer.createTransporter({
+          service: 'gmail',
+          auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+          },
+        });
+
+        // Send admin notification
+        console.log('Sending admin email...');
+        const adminResult = await transporter.sendMail({
+          from: process.env.EMAIL_USER,
+          to: process.env.ADMIN_EMAIL || 'info@lw-builders.com',
+          subject: 'New Lead Form Submission - Legacy Wealth Builders',
+          html: `
+            <h2>New Lead Form Submission</h2>
+            <p><strong>Name:</strong> ${formData.firstName} ${formData.lastName}</p>
+            <p><strong>Email:</strong> ${formData.email}</p>
+            ${formData.phone ? `<p><strong>Phone:</strong> ${formData.phone}</p>` : ''}
+            <p><strong>Submission Time:</strong> ${new Date().toLocaleString()}</p>
+            <p><strong>Source:</strong> Legacy Wealth Builders Website</p>
+          `,
+        });
+        console.log('Admin email sent:', adminResult.messageId);
+
+        // Send user confirmation
+        console.log('Sending user email...');
+        const userResult = await transporter.sendMail({
+          from: process.env.EMAIL_USER,
+          to: formData.email,
+          subject: 'Thank you for your interest in Legacy Wealth Builders',
+          html: `
+            <h2>Thank you for your interest!</h2>
+            <p>Dear ${formData.firstName},</p>
+            <p>Thank you for requesting our Legacy Wealth Guide to Precious Metals. We have received your information and will be in touch with you shortly.</p>
+            <p>In the meantime, if you have any questions, please don't hesitate to contact us at info@lw-builders.com or call us directly.</p>
+            <p>Best regards,<br>The Legacy Wealth Builders Team</p>
+            <hr>
+            <p><small>This email was sent because you requested information from Legacy Wealth Builders. If you did not make this request, please ignore this email.</small></p>
+          `,
+        });
+        console.log('User email sent:', userResult.messageId);
+
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({
+            success: true,
+            message: 'Thank you! Your information has been submitted successfully and emails have been sent.',
+            data: formData
+          }),
+        };
+
+      } catch (emailError) {
+        console.error('Email error:', emailError);
+        console.error('Email error details:', emailError.message);
+        
+        // Still return success but note the email issue
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({
+            success: true,
+            message: 'Thank you! Your information has been submitted successfully. We will contact you soon.',
+            emailError: emailError.message,
+            data: formData
+          }),
+        };
+      }
+    } else {
+      console.log('Email not configured, returning success without sending emails');
       return {
         statusCode: 200,
         headers,
         body: JSON.stringify({
           success: true,
-          message: 'Form submitted successfully! We will contact you soon. (Email not configured)',
+          message: 'Thank you! Your information has been submitted successfully. We will contact you soon.',
+          note: 'Email not configured',
           data: formData
         }),
       };
     }
 
-    console.log('Creating email transporter...');
-    // Create email transporter
-    const transporter = nodemailer.createTransporter({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
-    // Verify transporter
-    console.log('Verifying email transporter...');
-    try {
-      await transporter.verify();
-      console.log('Email transporter verified successfully');
-    } catch (verifyError) {
-      console.error('Email transporter verification failed:', verifyError);
-      return {
-        statusCode: 500,
-        headers,
-        body: JSON.stringify({
-          success: false,
-          error: 'Email configuration error',
-          message: 'There was an issue with email configuration. Please contact us directly at info@lw-builders.com.'
-        }),
-      };
-    }
-
-    // Send admin notification
-    console.log('Preparing admin email...');
-    const adminMailOptions = {
-      from: process.env.EMAIL_USER,
-      to: process.env.ADMIN_EMAIL || 'info@lw-builders.com',
-      subject: 'New Lead Form Submission - Legacy Wealth Builders',
-      html: `
-        <h2>New Lead Form Submission</h2>
-        <p><strong>Name:</strong> ${formData.firstName} ${formData.lastName}</p>
-        <p><strong>Email:</strong> ${formData.email}</p>
-        ${formData.phone ? `<p><strong>Phone:</strong> ${formData.phone}</p>` : ''}
-        <p><strong>Submission Time:</strong> ${new Date().toLocaleString()}</p>
-        <p><strong>Source:</strong> Legacy Wealth Builders Website</p>
-      `,
-    };
-
-    // Send user confirmation
-    console.log('Preparing user email...');
-    const userMailOptions = {
-      from: process.env.EMAIL_USER,
-      to: formData.email,
-      subject: 'Thank you for your interest in Legacy Wealth Builders',
-      html: `
-        <h2>Thank you for your interest!</h2>
-        <p>Dear ${formData.firstName},</p>
-        <p>Thank you for requesting our Legacy Wealth Guide to Precious Metals. We have received your information and will be in touch with you shortly.</p>
-        <p>In the meantime, if you have any questions, please don't hesitate to contact us at info@lw-builders.com or call us directly.</p>
-        <p>Best regards,<br>The Legacy Wealth Builders Team</p>
-        <hr>
-        <p><small>This email was sent because you requested information from Legacy Wealth Builders. If you did not make this request, please ignore this email.</small></p>
-      `,
-    };
-
-    // Send both emails
-    console.log('Sending emails...');
-    try {
-      console.log('Sending admin email to:', adminMailOptions.to);
-      const adminResult = await transporter.sendMail(adminMailOptions);
-      console.log('Admin email sent successfully:', adminResult.messageId);
-      
-      console.log('Sending user email to:', userMailOptions.to);
-      const userResult = await transporter.sendMail(userMailOptions);
-      console.log('User email sent successfully:', userResult.messageId);
-      
-      console.log('Both emails sent successfully');
-    } catch (emailError) {
-      console.error('Error sending emails:', emailError);
-      console.error('Email error details:', JSON.stringify(emailError, null, 2));
-      
-      return {
-        statusCode: 200,
-        headers,
-        body: JSON.stringify({
-          success: true,
-          message: 'Form submitted successfully, but there was an issue sending emails. We will contact you directly.',
-          emailError: emailError.message
-        }),
-      };
-    }
-
-    console.log('Function completed successfully');
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify({
-        success: true,
-        message: 'Thank you! Your information has been submitted successfully. We will contact you soon with your free guide.',
-        data: formData
-      }),
-    };
-
   } catch (error) {
     console.error('Function error:', error);
-    console.error('Error details:', JSON.stringify(error, null, 2));
+    console.error('Error stack:', error.stack);
     return {
       statusCode: 500,
       headers,
