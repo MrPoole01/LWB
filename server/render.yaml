@@ -16,4 +16,10 @@ services:
       - key: ADMIN_EMAIL
         value: info@lw-builders.com
       - key: FRONTEND_URL
-        sync: false 
+        value: https://www.legacywealthbuilders.org
+      - key: CORS_ORIGIN
+        value: https://www.legacywealthbuilders.org
+      - key: JWT_SECRET
+        generateValue: true
+      - key: API_PREFIX
+        value: /api 
