@@ -10,11 +10,24 @@
   to = "/index.html"
   status = 200
 
+# Production environment (www.legacywealthbuilders.org)
 [context.production.environment]
   VITE_API_URL = "https://legacy-wealth-api.onrender.com/api"
 
+# Deploy previews (for pull requests)
 [context.deploy-preview.environment]
   VITE_API_URL = "https://legacy-wealth-api.onrender.com/api"
 
+# Branch deploys (for other branches)
 [context.branch-deploy.environment]
-  VITE_API_URL = "https://legacy-wealth-api.onrender.com/api" 
+  VITE_API_URL = "https://legacy-wealth-api.onrender.com/api"
+
+# Custom domain configuration
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "https://www.legacywealthbuilders.org"
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin" 

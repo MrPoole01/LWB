@@ -30,7 +30,9 @@ app.use(cors({
     'https://www.lw-builders.com',
     'https://lw-builders.com',
     'https://leads.lw-builders.com',
-    'https://app.lw-builders.com'
+    'https://app.lw-builders.com',
+    'https://www.legacywealthbuilders.org',
+    'https://legacywealthbuilders.org'
   ],
   methods: ['GET', 'POST'],
   credentials: true
@@ -41,7 +43,9 @@ console.log('CORS configured to allow:', [
   'https://www.lw-builders.com',
   'https://lw-builders.com',
   'https://leads.lw-builders.com',
-  'https://app.lw-builders.com'
+  'https://app.lw-builders.com',
+  'https://www.legacywealthbuilders.org',
+  'https://legacywealthbuilders.org'
 ]);
 
 app.use(express.json());

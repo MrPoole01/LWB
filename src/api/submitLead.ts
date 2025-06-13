@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// Simple API URL construction
-const API_URL = 'http://localhost:3001/api';
+// Use environment variable for API URL
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 console.log('Using API URL:', API_URL);
 
