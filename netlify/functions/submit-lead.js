@@ -68,7 +68,7 @@ exports.handler = async (event, context) => {
         const nodemailer = require('nodemailer');
         
         console.log('Creating email transporter...');
-        const transporter = nodemailer.createTransporter({
+        const transporter = nodemailer.createTransport({
           service: 'gmail',
           auth: {
             user: process.env.EMAIL_USER,
