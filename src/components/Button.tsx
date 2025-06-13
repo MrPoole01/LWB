@@ -9,6 +9,7 @@ interface ButtonProps {
   className?: string;
   href?: string;
   disabled?: boolean;
+  htmlType?: 'button' | 'submit' | 'reset';
 }
 
 const Button: React.FC<ButtonProps> = ({ 
@@ -18,7 +19,8 @@ const Button: React.FC<ButtonProps> = ({
   fullWidth = false,
   className = '',
   href,
-  disabled = false
+  disabled = false,
+  htmlType = 'button'
 }) => {
   const baseStyles = "py-3 px-6 rounded-md font-medium transition-all duration-300 text-center";
   const widthStyles = fullWidth ? "w-full" : "";
@@ -32,6 +34,7 @@ const Button: React.FC<ButtonProps> = ({
   
   const buttonElement = (
     <motion.button
+      type={htmlType}
       className={`${baseStyles} ${typeStyles[type]} ${widthStyles} ${disabledStyles} ${className}`}
       onClick={disabled ? undefined : onClick}
       whileHover={disabled ? {} : { scale: 1.03 }}
