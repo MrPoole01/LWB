@@ -1,6 +1,10 @@
 const nodemailer = require('nodemailer');
 
 exports.handler = async (event, context) => {
+  console.log('Function started');
+  console.log('HTTP Method:', event.httpMethod);
+  console.log('Headers:', JSON.stringify(event.headers, null, 2));
+  
   // Set CORS headers
   const headers = {
     'Access-Control-Allow-Origin': '*',
@@ -10,6 +14,7 @@ exports.handler = async (event, context) => {
 
   // Handle preflight requests
   if (event.httpMethod === 'OPTIONS') {
+    console.log('Handling OPTIONS request');
     return {
       statusCode: 200,
       headers,
@@ -19,6 +24,7 @@ exports.handler = async (event, context) => {
 
   // Only allow POST requests
   if (event.httpMethod !== 'POST') {
+    console.log('Method not allowed:', event.httpMethod);
     return {
       statusCode: 405,
       headers,
@@ -27,11 +33,13 @@ exports.handler = async (event, context) => {
   }
 
   try {
+    console.log('Parsing request body...');
     const formData = JSON.parse(event.body);
-    console.log('Received form submission:', formData);
+    console.log('Received form submission:', JSON.stringify(formData, null, 2));
 
     // Validate required fields
     if (!formData.firstName || !formData.lastName || !formData.email) {
+      console.log('Missing required fields');
       return {
         statusCode: 400,
         headers,
@@ -39,6 +47,12 @@ exports.handler = async (event, context) => {
       };
     }
 
+    // Check environment variables
+    console.log('Checking environment variables...');
+    console.log('EMAIL_USER exists:', !!process.env.EMAIL_USER);
+    console.log('EMAIL_PASS exists:', !!process.env.EMAIL_PASS);
+    console.log('ADMIN_EMAIL:', process.env.ADMIN_EMAIL);
+    
     // Check if email is configured
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
       console.log('Email not configured, returning success without sending');
@@ -47,12 +61,13 @@ exports.handler = async (event, context) => {
         headers,
         body: JSON.stringify({
           success: true,
-          message: 'Form submitted successfully! We will contact you soon.',
+          message: 'Form submitted successfully! We will contact you soon. (Email not configured)',
           data: formData
         }),
       };
     }
 
+    console.log('Creating email transporter...');
     // Create email transporter
     const transporter = nodemailer.createTransporter({
       service: 'gmail',
@@ -62,7 +77,26 @@ exports.handler = async (event, context) => {
       },
     });
 
+    // Verify transporter
+    console.log('Verifying email transporter...');
+    try {
+      await transporter.verify();
+      console.log('Email transporter verified successfully');
+    } catch (verifyError) {
+      console.error('Email transporter verification failed:', verifyError);
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({
+          success: false,
+          error: 'Email configuration error',
+          message: 'There was an issue with email configuration. Please contact us directly at info@lw-builders.com.'
+        }),
+      };
+    }
+
     // Send admin notification
+    console.log('Preparing admin email...');
     const adminMailOptions = {
       from: process.env.EMAIL_USER,
       to: process.env.ADMIN_EMAIL || 'info@lw-builders.com',
@@ -78,6 +112,7 @@ exports.handler = async (event, context) => {
     };
 
     // Send user confirmation
+    console.log('Preparing user email...');
     const userMailOptions = {
       from: process.env.EMAIL_USER,
       to: formData.email,
@@ -94,17 +129,33 @@ exports.handler = async (event, context) => {
     };
 
     // Send both emails
+    console.log('Sending emails...');
     try {
-      await Promise.all([
-        transporter.sendMail(adminMailOptions),
-        transporter.sendMail(userMailOptions)
-      ]);
-      console.log('Emails sent successfully');
+      console.log('Sending admin email to:', adminMailOptions.to);
+      const adminResult = await transporter.sendMail(adminMailOptions);
+      console.log('Admin email sent successfully:', adminResult.messageId);
+      
+      console.log('Sending user email to:', userMailOptions.to);
+      const userResult = await transporter.sendMail(userMailOptions);
+      console.log('User email sent successfully:', userResult.messageId);
+      
+      console.log('Both emails sent successfully');
     } catch (emailError) {
       console.error('Error sending emails:', emailError);
-      // Still return success but note the email issue
+      console.error('Email error details:', JSON.stringify(emailError, null, 2));
+      
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({
+          success: true,
+          message: 'Form submitted successfully, but there was an issue sending emails. We will contact you directly.',
+          emailError: emailError.message
+        }),
+      };
     }
 
+    console.log('Function completed successfully');
     return {
       statusCode: 200,
       headers,
@@ -117,12 +168,14 @@ exports.handler = async (event, context) => {
 
   } catch (error) {
     console.error('Function error:', error);
+    console.error('Error details:', JSON.stringify(error, null, 2));
     return {
       statusCode: 500,
       headers,
       body: JSON.stringify({
         error: 'Internal server error',
-        message: 'There was an error processing your request. Please try again or contact us directly at info@lw-builders.com.'
+        message: 'There was an error processing your request. Please try again or contact us directly at info@lw-builders.com.',
+        details: error.message
       }),
     };
   }
