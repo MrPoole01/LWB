@@ -3,6 +3,9 @@
   command = "npm run build"
   functions = "netlify/functions"
 
+[functions]
+  included_files = ["static/**"]
+
 [build.environment]
   NODE_VERSION = "18"
 

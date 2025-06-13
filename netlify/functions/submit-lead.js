@@ -93,22 +93,60 @@ exports.handler = async (event, context) => {
         });
         console.log('Admin email sent:', adminResult.messageId);
 
-        // Send user confirmation
-        console.log('Sending user email...');
-        const userResult = await transporter.sendMail({
+        // Send user confirmation with PDF attachment
+        console.log('Sending user email with PDF attachment...');
+        
+        // Read the PDF file
+        const fs = require('fs');
+        const path = require('path');
+        const pdfPath = path.join(process.cwd(), 'static', 'legacy-wealth-guide.pdf');
+        
+        let pdfAttachment = null;
+        try {
+          if (fs.existsSync(pdfPath)) {
+            console.log('PDF file found, attaching to email');
+            pdfAttachment = {
+              filename: 'Legacy-Wealth-Guide-to-Precious-Metals.pdf',
+              path: pdfPath,
+              contentType: 'application/pdf'
+            };
+          } else {
+            console.log('PDF file not found at:', pdfPath);
+          }
+        } catch (pdfError) {
+          console.error('Error accessing PDF file:', pdfError);
+        }
+
+        const userMailOptions = {
           from: process.env.EMAIL_USER,
           to: formData.email,
-          subject: 'Thank you for your interest in Legacy Wealth Builders',
+          subject: 'Your Legacy Wealth Guide to Precious Metals - Thank You!',
           html: `
             <h2>Thank you for your interest!</h2>
             <p>Dear ${formData.firstName},</p>
-            <p>Thank you for requesting our Legacy Wealth Guide to Precious Metals. We have received your information and will be in touch with you shortly.</p>
+            <p>Thank you for requesting our <strong>Legacy Wealth Guide to Precious Metals</strong>. We have received your information and are excited to share this valuable resource with you.</p>
+            ${pdfAttachment ? '<p><strong>Your free guide is attached to this email.</strong> Please download and save it for your reference.</p>' : '<p>We will be sending you the guide shortly in a separate email.</p>'}
+            <p>This comprehensive guide will help you understand:</p>
+            <ul>
+              <li>The fundamentals of precious metals investing</li>
+              <li>How to protect your wealth with physical assets</li>
+              <li>Strategies for building long-term financial security</li>
+              <li>Important considerations for precious metals IRAs</li>
+            </ul>
+            <p>We will also be in touch with you shortly to discuss how we can help you achieve your financial goals.</p>
             <p>In the meantime, if you have any questions, please don't hesitate to contact us at info@lw-builders.com or call us directly.</p>
             <p>Best regards,<br>The Legacy Wealth Builders Team</p>
             <hr>
             <p><small>This email was sent because you requested information from Legacy Wealth Builders. If you did not make this request, please ignore this email.</small></p>
           `,
-        });
+        };
+
+        // Add attachment if PDF is available
+        if (pdfAttachment) {
+          userMailOptions.attachments = [pdfAttachment];
+        }
+
+        const userResult = await transporter.sendMail(userMailOptions);
         console.log('User email sent:', userResult.messageId);
 
         return {
