@@ -7,19 +7,9 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 3001
       - key: EMAIL_USER
         sync: false
       - key: EMAIL_PASS
         sync: false
       - key: ADMIN_EMAIL
-        value: info@lw-builders.com
-      - key: FRONTEND_URL
-        value: https://www.legacywealthbuilders.org
-      - key: CORS_ORIGIN
-        value: https://www.legacywealthbuilders.org
-      - key: JWT_SECRET
-        generateValue: true
-      - key: API_PREFIX
-        value: /api 
+        value: info@lw-builders.com 

@@ -2,23 +2,19 @@ import { z } from 'zod';
 
 const envSchema = z.object({
   // Server Configuration
-  PORT: z.string().transform(Number),
-  NODE_ENV: z.enum(['development', 'production', 'test']),
+  PORT: z.string().transform(Number).optional().default('3001'),
+  NODE_ENV: z.enum(['development', 'production', 'test']).optional().default('development'),
 
-  // Email Configuration
-  EMAIL_USER: z.string().email(),
-  EMAIL_PASS: z.string().min(1),
-  ADMIN_EMAIL: z.string().email(),
+  // Email Configuration (optional for development)
+  EMAIL_USER: z.string().email().optional(),
+  EMAIL_PASS: z.string().min(1).optional(),
+  ADMIN_EMAIL: z.string().email().optional().default('info@lw-builders.com'),
 
-  // Frontend URL
-  FRONTEND_URL: z.string().url(),
-
-  // Security
-  JWT_SECRET: z.string().min(32),
-  CORS_ORIGIN: z.string().url(),
-
-  // API Configuration
-  API_PREFIX: z.string().startsWith('/'),
+  // Optional configurations
+  FRONTEND_URL: z.string().url().optional(),
+  JWT_SECRET: z.string().min(1).optional(),
+  CORS_ORIGIN: z.string().url().optional(),
+  API_PREFIX: z.string().optional().default('/api'),
 });
 
 type EnvError = {
