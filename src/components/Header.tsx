@@ -1,13 +1,15 @@
 import React from 'react';
-import { Shield, Phone, Mail } from 'lucide-react';
+import { Phone, Mail } from 'lucide-react';
 
 const Header: React.FC = () => {
   return (
     <header className="bg-[#1A2744] text-white py-4">
       <div className="container mx-auto px-4 flex justify-between items-center">
         <div className="flex items-center">
-          <Shield className="h-8 w-8 text-[#D4AF37] mr-2" />
-          <span className="text-xl font-serif tracking-wider">Legacy Wealth Builders</span>
+          <a href="/" className="flex items-center">
+            <img src="/logo.png" alt="Legacy Wealth Builders" className="h-8 w-8 mr-2" />
+            <span className="text-xl font-serif tracking-wider">Legacy Wealth Builders</span>
+          </a>
         </div>
         <div className="flex items-center">
           <Mail size={18} className="mr-2 text-[#D4AF37]" />

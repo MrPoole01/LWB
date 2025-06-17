@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { TrendingUp, Shield, BarChart, DollarSign, Percent, Award } from 'lucide-react';
+import { TrendingUp, BarChart, DollarSign, Percent, Award } from 'lucide-react';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -81,7 +81,7 @@ const LandingPage: React.FC = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <BenefitCard 
-              icon={<Shield size={40} />}
+              icon={<img src="/logo.png" alt="Legacy Wealth Builders" className="h-10 w-10" />}
               title="Inflation Protection"
               description="Physical gold and silver have historically maintained their purchasing power during periods of high inflation, unlike paper currency."
               delay={0}

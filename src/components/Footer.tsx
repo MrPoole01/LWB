@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, Instagram, Facebook, Twitter } from 'lucide-react';
+import { Instagram, Facebook, Twitter } from 'lucide-react';
 
 const Footer: React.FC = () => {
   return (
@@ -7,8 +7,10 @@ const Footer: React.FC = () => {
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center mb-8">
           <div className="flex items-center mb-4 md:mb-0">
-            <Shield className="h-8 w-8 text-[#D4AF37] mr-2" />
-            <span className="text-xl font-serif tracking-wider">Legacy Wealth Builders</span>
+            <a href="/" className="flex items-center">
+              <img src="/logo.png" alt="Legacy Wealth Builders" className="h-8 w-8 mr-2" />
+              <span className="text-xl font-serif tracking-wider">Legacy Wealth Builders</span>
+            </a>
           </div>
           <div className="flex space-x-4">
             <a href="https://www.facebook.com/profile.php?id=61576706432261" className="text-white hover:text-[#D4AF37] transition-colors">
