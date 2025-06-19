@@ -182,7 +182,7 @@ const LandingPage: React.FC = () => {
               </div>
               <div className="flex items-start">
                 <div className="text-[#D4AF37] mr-3 mt-1">✓</div>
-                <p>How to start stacking with as little as $100</p>
+                <p>How to start buying gold and silver in fractions</p>
               </div>
               <div className="flex items-start">
                 <div className="text-[#D4AF37] mr-3 mt-1">✓</div>
