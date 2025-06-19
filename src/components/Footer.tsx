@@ -16,7 +16,7 @@ const Footer: React.FC = () => {
             <a href="https://www.facebook.com/profile.php?id=61576706432261" className="text-white hover:text-[#D4AF37] transition-colors">
               <Facebook size={20} />
             </a>
-            <a href="https://x.com/PooleRick4879" className="text-white hover:text-[#D4AF37] transition-colors">
+            <a href="https://x.com/legacywealth_" className="text-white hover:text-[#D4AF37] transition-colors">
               <Twitter size={20} />
             </a>
             <a href="https://www.instagram.com/legacy_wealth_5280/" className="text-white hover:text-[#D4AF37] transition-colors">
