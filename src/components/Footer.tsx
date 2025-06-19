@@ -19,7 +19,7 @@ const Footer: React.FC = () => {
             <a href="https://x.com/legacywealth_" className="text-white hover:text-[#D4AF37] transition-colors">
               <Twitter size={20} />
             </a>
-            <a href="https://www.instagram.com/legacy_wealth_5280/" className="text-white hover:text-[#D4AF37] transition-colors">
+            <a href="https://www.instagram.com/legacywealth_5280/" className="text-white hover:text-[#D4AF37] transition-colors">
               <Instagram size={20} />
             </a>
           </div>
