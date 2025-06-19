@@ -30,7 +30,7 @@ const Footer: React.FC = () => {
             <div>
               <h3 className="text-white font-medium mb-2">Contact Us</h3>
               <p>info@lw-builders.com</p>
-              <p>1-800-555-1234</p>
+              {/* <p>1-800-555-1234</p> */}
             </div>
             <div>
               <h3 className="text-white font-medium mb-2">Quick Links</h3>
